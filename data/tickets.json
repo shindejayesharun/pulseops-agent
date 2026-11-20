@@ -1,0 +1,42 @@
+[
+  {
+    "id": "INC-201",
+    "title": "Elevated latency on checkout-api during promotional flash sale",
+    "service_id": "svc-checkout-api",
+    "status": "investigating",
+    "severity": "P1",
+    "team": "payments",
+    "created_at": "2026-11-20T08:15:00Z",
+    "description": "Checkout p99 latency spiked from 250ms to 4.2s. Upstream payment-gateway thread pool saturation suspected."
+  },
+  {
+    "id": "INC-202",
+    "title": "fraud-detector timeout triggering false positive decline spikes",
+    "service_id": "svc-fraud",
+    "status": "resolved",
+    "severity": "P2",
+    "team": "security",
+    "created_at": "2026-11-19T14:30:00Z",
+    "description": "External IP reputation API provider experienced intermittent packet drop, causing 5s timeout on fraud evaluation."
+  },
+  {
+    "id": "TICK-301",
+    "title": "Missing runbook documentation for pricing-engine cache invalidation",
+    "service_id": "svc-pricing",
+    "status": "open",
+    "severity": "P3",
+    "team": "catalog",
+    "created_at": "2026-11-18T10:00:00Z",
+    "description": "On-call rotation identified that manual coupon cache flushes lack documented escalation procedures."
+  },
+  {
+    "id": "TICK-302",
+    "title": "Deprecate legacy v1 payment authorization tokens",
+    "service_id": "svc-payment-gw",
+    "status": "open",
+    "severity": "P4",
+    "team": "payments",
+    "created_at": "2026-11-17T16:45:00Z",
+    "description": "Audit revealed 0.05% of traffic still initiates payment tokens with deprecated SHA-1 signatures."
+  }
+]

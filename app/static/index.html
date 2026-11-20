@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PulseOps — Engineering Operations Agent</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="logo-area">
+        <span class="logo-icon">⚡</span>
+        <div>
+          <h1 class="logo-title">PulseOps Agent</h1>
+          <span class="logo-subtitle">Engineering Ops Assistant · Northstar Checkout</span>
+        </div>
+      </div>
+      <div class="header-controls">
+        <div id="mode-badge" class="badge badge-mock">
+          <span class="status-dot"></span>
+          <span id="mode-text">Mock Mode</span>
+        </div>
+        <select id="engine-select" class="select-control">
+          <option value="mock" selected>Offline Mock Planner</option>
+          <option value="live">Live OpenAI (gpt-4o)</option>
+        </select>
+        <button id="new-chat-btn" class="btn btn-secondary">＋ New Chat</button>
+      </div>
+    </header>
+
+    <!-- Main Workspace Split -->
+    <main class="app-main">
+      <!-- Left: Chat Panel -->
+      <section class="chat-section">
+        <!-- Quick Prompts / Chips -->
+        <div class="chips-container">
+          <span class="chips-label">Quick Prompts:</span>
+          <button class="chip" data-prompt="What is the availability SLO for checkout-api?">SLO for checkout-api</button>
+          <button class="chip" data-prompt="How do we triage latency spikes in checkout-api according to the runbook?">Runbook Triage</button>
+          <button class="chip" data-prompt="Find who owns checkout-api and create a P3 ticket draft for missing runbook section.">Chain: Owner → P3 Ticket</button>
+          <button class="chip" data-prompt="List all currently open PRs and their authors.">Open PRs</button>
+          <button class="chip" data-prompt="Summarize PR #101 and analyze the deployment risk.">Summarize PR #101</button>
+          <button class="chip" data-prompt="Post this active outage to our public company Twitter/X account with root cause.">Safety Refusal Test</button>
+        </div>
+
+        <!-- Chat Messages -->
+        <div id="chat-messages" class="chat-messages">
+          <div class="message assistant-msg">
+            <div class="msg-sender">⚡ PulseOps System</div>
+            <div class="msg-content">
+              Welcome to <strong>PulseOps</strong>. I can query Northstar Checkout runbooks, inspect service ownership & dependencies, analyze PRs, and safely draft incident tickets. How can I assist your engineering operations today?
+            </div>
+          </div>
+        </div>
+
+        <!-- Input Box -->
+        <form id="chat-form" class="chat-form">
+          <input 
+            type="text" 
+            id="chat-input" 
+            class="chat-input" 
+            placeholder="Ask a question, investigate a service, or draft an incident..." 
+            autocomplete="off"
+            required
+          />
+          <button type="submit" id="send-btn" class="btn btn-primary">
+            <span>Send</span>
+          </button>
+        </form>
+      </section>
+
+      <!-- Right: Telemetry & Artifacts Inspector -->
+      <aside class="inspector-section">
+        <div class="inspector-tabs">
+          <button class="tab-btn active" data-tab="traces">
+            Live Traces <span id="trace-count" class="tab-badge">0</span>
+          </button>
+          <button class="tab-btn" data-tab="tickets">
+            Ticket Drafts <span id="ticket-count" class="tab-badge">0</span>
+          </button>
+          <button class="tab-btn" data-tab="prs">
+            PR Summaries <span id="pr-count" class="tab-badge">0</span>
+          </button>
+        </div>
+
+        <div class="inspector-content">
+          <!-- Traces Tab -->
+          <div id="tab-traces" class="tab-pane active">
+            <div id="traces-list" class="traces-list">
+              <div class="empty-state">No tool invocations in this session yet.</div>
+            </div>
+          </div>
+
+          <!-- Tickets Tab -->
+          <div id="tab-tickets" class="tab-pane">
+            <div id="tickets-list" class="artifacts-list">
+              <div class="empty-state">No ticket drafts generated yet.</div>
+            </div>
+          </div>
+
+          <!-- PRs Tab -->
+          <div id="tab-prs" class="tab-pane">
+            <div id="prs-list" class="artifacts-list">
+              <div class="empty-state">No PR summaries recorded yet.</div>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

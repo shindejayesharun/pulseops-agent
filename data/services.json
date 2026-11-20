@@ -1,0 +1,62 @@
+[
+  {
+    "id": "svc-checkout-api",
+    "name": "checkout-api",
+    "team": "payments",
+    "repo": "northstar/checkout-api",
+    "slo_availability": 99.95,
+    "depends_on": ["svc-payment-gw", "svc-pricing", "svc-fraud"],
+    "oncall": "payments-oncall",
+    "description": "Core customer checkout orchestration API handling cart checkout, tax calculation, and order submission."
+  },
+  {
+    "id": "svc-payment-gw",
+    "name": "payment-gateway",
+    "team": "payments",
+    "repo": "northstar/payment-gateway",
+    "slo_availability": 99.99,
+    "depends_on": ["svc-ledger", "external:stripe"],
+    "oncall": "payments-oncall",
+    "description": "High-resilience payment routing gateway interfacing with Stripe and credit card tokenizers."
+  },
+  {
+    "id": "svc-fraud",
+    "name": "fraud-detector",
+    "team": "security",
+    "repo": "northstar/fraud-detector",
+    "slo_availability": 99.90,
+    "depends_on": ["svc-ledger"],
+    "oncall": "secops-oncall",
+    "description": "Real-time risk scoring engine analyzing transactions for velocity anomalies, IP reputation, and card fraud."
+  },
+  {
+    "id": "svc-pricing",
+    "name": "pricing-engine",
+    "team": "catalog",
+    "repo": "northstar/pricing-engine",
+    "slo_availability": 99.90,
+    "depends_on": ["svc-cart"],
+    "oncall": "catalog-oncall",
+    "description": "Dynamic pricing, discount coupon calculation, regional sales tax evaluation, and currency conversion."
+  },
+  {
+    "id": "svc-cart",
+    "name": "cart-service",
+    "team": "experience",
+    "repo": "northstar/cart-service",
+    "slo_availability": 99.85,
+    "depends_on": ["svc-pricing"],
+    "oncall": "exp-oncall",
+    "description": "Customer shopping cart state management, session preservation, and item reservation."
+  },
+  {
+    "id": "svc-ledger",
+    "name": "ledger-db",
+    "team": "infrastructure",
+    "repo": "northstar/ledger-db",
+    "slo_availability": 99.99,
+    "depends_on": [],
+    "oncall": "infra-oncall",
+    "description": "Double-entry transactional ledger storing immutable financial audit records and payment authorization tokens."
+  }
+]

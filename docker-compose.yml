@@ -1,0 +1,17 @@
+services:
+  pulseops:
+    build: .
+    container_name: pulseops-agent
+    ports:
+      - "8000:8000"
+    environment:
+      - LLM_MODE=mock
+      - LLM_PROVIDER=openai
+      - DATABASE_URL=sqlite:///./pulseops.db
+    volumes:
+      - ./data:/app/data
+      - pulseops_data:/app/pulseops.db
+    restart: unless-stopped
+
+volumes:
+  pulseops_data:

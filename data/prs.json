@@ -1,0 +1,61 @@
+[
+  {
+    "number": 101,
+    "title": "feat(checkout): Add circuit breaker for payment-gateway calls",
+    "author": "alex_dev",
+    "service_id": "svc-checkout-api",
+    "status": "open",
+    "files_changed": [
+      "src/clients/payment_client.py",
+      "src/circuit_breaker.py",
+      "tests/test_circuit_breaker.py"
+    ],
+    "description": "Implements exponential backoff and circuit breaker pattern on HTTP requests to payment-gateway to prevent cascade failures when upstream times out.",
+    "risk_level": "MEDIUM",
+    "diff_summary": "+142 lines, -18 lines. Adds pybreaker dependency and fail-open telemetry counter."
+  },
+  {
+    "number": 102,
+    "title": "fix(pricing): Fix currency conversion rounding error on discounts",
+    "author": "sarah_cat",
+    "service_id": "svc-pricing",
+    "status": "open",
+    "files_changed": [
+      "services/currency.py",
+      "tests/test_currency.py"
+    ],
+    "description": "Switches discount percentage calculation from float64 to Decimal to avoid sub-cent truncation issues on multi-currency checkouts.",
+    "risk_level": "LOW",
+    "diff_summary": "+38 lines, -12 lines. Replaces round(val, 2) with Decimal.quantize(ROUND_HALF_EVEN)."
+  },
+  {
+    "number": 103,
+    "title": "perf(fraud): Cache IP reputation scores in Redis with 5m TTL",
+    "author": "marcus_sec",
+    "service_id": "svc-fraud",
+    "status": "open",
+    "files_changed": [
+      "src/scoring/ip_reputation.py",
+      "src/cache/redis_client.py",
+      "config/settings.py",
+      "tests/test_ip_cache.py"
+    ],
+    "description": "Caches external threat intelligence IP risk scores in Redis with a 5-minute TTL to reduce p99 scoring latency from 180ms to 8ms.",
+    "risk_level": "LOW",
+    "diff_summary": "+95 lines, -22 lines. Adds Redis cluster connection pool and cache hit metrics."
+  },
+  {
+    "number": 104,
+    "title": "chore(deps): Bump PostgreSQL connector and enable SSL verify-full",
+    "author": "dev_ops",
+    "service_id": "svc-ledger",
+    "status": "merged",
+    "files_changed": [
+      "requirements.txt",
+      "db/connection.py"
+    ],
+    "description": "Bumps psycopg2-binary to 2.9.9 and forces sslmode=verify-full across all ledger connection pools.",
+    "risk_level": "MEDIUM",
+    "diff_summary": "+15 lines, -6 lines. Updates connection string parser."
+  }
+]
