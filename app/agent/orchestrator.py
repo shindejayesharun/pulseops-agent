@@ -17,6 +17,7 @@ class PulseOpsOrchestrator:
         self.provider_name = provider_name or settings.llm_provider
         self.provider = get_llm_provider(mode=self.mode, provider=self.provider_name)
         self.workflow = self._build_graph()
+        self.event_callback = None
 
     def _build_graph(self):
         graph = StateGraph(AgentState)
@@ -118,6 +119,9 @@ class PulseOpsOrchestrator:
             tool_args = call.get("args", {})
             call_id = call.get("id", f"call_{uuid.uuid4().hex[:8]}")
 
+            if self.event_callback:
+                self.event_callback("tool_start", {"tool_name": tool_name, "args": tool_args, "step": step_num})
+
             exec_res = dispatch_tool(
                 tool_name=tool_name,
                 args=tool_args,
@@ -127,6 +131,14 @@ class PulseOpsOrchestrator:
             )
 
             state["tool_traces"].append(exec_res)
+
+            if self.event_callback:
+                self.event_callback("tool_end", {
+                    "tool_name": tool_name,
+                    "ok": exec_res.get("ok", True),
+                    "latency_ms": exec_res.get("latency_ms", 0.0),
+                    "step": step_num
+                })
 
             # Append tool result to conversation history
             state["messages"].append({
@@ -154,7 +166,13 @@ class PulseOpsOrchestrator:
         return "done"
 
     # --- Primary Entrypoint ---
-    def run_turn(self, conversation_id: str, user_input: str) -> Dict[str, Any]:
+    def run_turn(
+        self,
+        conversation_id: str,
+        user_input: str,
+        event_callback: Optional[Any] = None
+    ) -> Dict[str, Any]:
+        self.event_callback = event_callback
         start_time = time.perf_counter()
         run_id = f"run_{uuid.uuid4().hex[:10]}"
 

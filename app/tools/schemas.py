@@ -33,3 +33,9 @@ class SummarizePRInput(BaseModel):
     summary: str = Field(min_length=15, description="High-level architectural summary of the changes and motivation")
     risk_level: Literal["LOW", "MEDIUM", "HIGH"] = Field(description="Deployment risk tier assessment")
     risk_notes: str = Field(min_length=10, description="Potential failure modes, edge cases, and rollback instructions")
+
+
+class ListTicketsInput(BaseModel):
+    service_id: Optional[str] = Field(default=None, description="Optional service ID to filter (e.g. 'svc-checkout-api')")
+    severity: Optional[str] = Field(default=None, description="Optional severity filter ('P0', 'P1', 'P2', 'P3', 'P4')")
+    include_drafts: bool = Field(default=True, description="Whether to include local draft tickets")

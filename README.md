@@ -16,9 +16,11 @@
 ### Core Capabilities
 * 📖 **Grounded Runbook Triage**: Answers complex operational and architectural queries with verifiable Markdown file citations.
 * 🔍 **Service & PR Discovery**: Queries service catalogs, dependency graphs, SLO availability targets, and pull request metadata.
+* 🎫 **Incident & Ticket Discovery**: Discovers active and historical incidents alongside local drafts via `list_tickets`.
 * 📝 **Safe Ticket Drafting (HITL)**: Persists validated incident and bug ticket drafts locally to SQLite with idempotency deduplication (strictly no unauthorized writes to production Jira).
 * 🛡️ **Autonomous PR Summarization**: Produces structured change summaries and deployment risk assessments (`LOW`, `MEDIUM`, `HIGH`).
 * 🚫 **Deterministic Safety Refusal**: Intercepts out-of-scope external mutations (e.g. social media posts) and destructive operations before tool invocation.
+* 🌊 **Real-Time SSE Streaming**: Emits live tool-calling events, reasoning status, and tokens via Server-Sent Events (`POST /api/chat/stream`).
 * ⚡ **Dual Engine (Mock vs Live)**: Runs 100% offline via a deterministic mock planner (zero API keys, zero cost) or live via OpenAI (`gpt-4o`) / Grok.
 
 ---
@@ -45,19 +47,13 @@ PulseOps runs with standard Python or via Docker Compose. **Zero API keys are re
    # To use Live LLM: set LLM_MODE=live and provide OPENAI_API_KEY.
    ```
 
-3. **Run Automated Unit Tests**:
+3. **Run Master Verification Health Check**:
    ```bash
-   pytest -v
-   # 11 passed in < 3s
+   python verify_all.py
+   # Runs 6 gates: Config, DB/FTS5, Tools, Pytest, 16 Golden Evals, and FastAPI SSE endpoints.
    ```
 
-4. **Run Golden Benchmark Suite**:
-   ```bash
-   python evals/run_evals.py --mode mock
-   # 16/16 cases passed (100% pass rate)
-   ```
-
-5. **Start FastAPI Application & Web UI**:
+4. **Start FastAPI Application & Web UI**:
    ```bash
    uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
    ```
@@ -169,8 +165,11 @@ Detailed results and per-case assertion breakdowns are committed in **[`evals/re
 ## 6. Project Documentation Directory
 
 * 📘 **[DESIGN.md](DESIGN.md)**: Architecture Decision Records (ADRs), tradeoff analyses (LangGraph vs Custom loop, SQLite FTS5 vs Milvus), and enterprise production scaling strategy.
+* 📊 **[AGENT_GRAPH.md](AGENT_GRAPH.md)**: Visual Mermaid diagram and in-depth walkthrough of the LangGraph state machine, nodes, and conditional edges.
+* 📋 **[CHECKLIST.md](CHECKLIST.md)**: Itemized submission verification matrix directly mapping each requirement from the Robosoft brief to our implementation.
 * 📓 **[PROCESS.md](PROCESS.md)**: Transparent AI-native engineering log detailing decomposition, prompt engineering, verification loops, and what we would automate next.
 * 📗 **[ASSUMPTIONS.md](ASSUMPTIONS.md)**: Explicit domain boundaries, safety policies, and technical constraints.
+* 📑 **[improment_plan_1.md](improment_plan_1.md)**: Competitive analysis of benchmark repositories and elevation milestones.
 * 📋 **[PLAN.md](PLAN.md)**: Original phased implementation roadmap.
 
 ---

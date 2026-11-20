@@ -10,6 +10,7 @@ from app.tools.schemas import (
     GetPRInput,
     GetServiceInput,
     ListOpenPRsInput,
+    ListTicketsInput,
     SearchDocsInput,
     SummarizePRInput,
 )
@@ -200,4 +201,59 @@ def summarize_pr(
         "pr_number": rec["pr_number"],
         "risk_level": rec["risk_level"],
         "message": f"Persisted structured summary for PR #{rec['pr_number']} (Risk: {rec['risk_level']})."
+    }
+
+
+# --- Tool 7: list_tickets ---
+def list_tickets(
+    service_id: Optional[str] = None,
+    severity: Optional[str] = None,
+    include_drafts: bool = True
+) -> Dict[str, Any]:
+    """List active incidents, historical tickets, and locally created draft tickets."""
+    validated = ListTicketsInput(
+        service_id=service_id,
+        severity=severity,
+        include_drafts=include_drafts
+    )
+    raw_tickets = _load_json_data("tickets.json")
+    results = []
+
+    # 1. Process active/historical tickets from dataset
+    for t in raw_tickets:
+        if validated.service_id and validated.service_id.lower() not in t.get("service_id", "").lower():
+            continue
+        if validated.severity and validated.severity.upper() != t.get("severity", "").upper():
+            continue
+        results.append({
+            "id": t["id"],
+            "title": t["title"],
+            "service_id": t["service_id"],
+            "severity": t["severity"],
+            "status": t["status"],
+            "team": t.get("team", "unassigned"),
+            "is_draft": False
+        })
+
+    # 2. Process locally drafted tickets from SQLite
+    if validated.include_drafts:
+        local_drafts = repo.list_ticket_drafts()
+        for d in local_drafts:
+            if validated.service_id and d.get("service_id") and validated.service_id.lower() not in d["service_id"].lower():
+                continue
+            if validated.severity and validated.severity.upper() != d.get("priority", "").upper():
+                continue
+            results.append({
+                "id": d["id"],
+                "title": d["title"],
+                "service_id": d.get("service_id"),
+                "severity": d["priority"],
+                "status": d["status"],
+                "team": d["team"],
+                "is_draft": True
+            })
+
+    return {
+        "count": len(results),
+        "tickets": results
     }

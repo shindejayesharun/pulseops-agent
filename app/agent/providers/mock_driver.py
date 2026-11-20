@@ -132,6 +132,17 @@ class MockLLMProvider(BaseLLMProvider):
         # -------------------------------------------------------------
         # 4. PR Queries
         # -------------------------------------------------------------
+        if "active incident" in q_lower or "list ticket" in q_lower or "existing ticket" in q_lower:
+            if "list_tickets" not in executed_tools:
+                return self._call_tool("list_tickets", {})
+            else:
+                return self._final_answer(
+                    "Here are the active incidents and tickets in Northstar Checkout:\n"
+                    "- **INC-201** (P1): Elevated latency on checkout-api during promotional flash sale (investigating)\n"
+                    "- **INC-202** (P2): fraud-detector timeout triggering false positive decline spikes (resolved)\n"
+                    "- **TICK-301** (P3): Missing runbook documentation for pricing-engine cache invalidation (open)"
+                )
+
         if "open pr" in q_lower or "list" in q_lower and "pr" in q_lower:
             if "list_open_prs" not in executed_tools:
                 return self._call_tool("list_open_prs", {})

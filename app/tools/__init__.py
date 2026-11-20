@@ -4,6 +4,7 @@ from app.tools.schemas import (
     GetPRInput,
     GetServiceInput,
     ListOpenPRsInput,
+    ListTicketsInput,
     SearchDocsInput,
     SummarizePRInput,
 )
@@ -18,4 +19,5 @@ __all__ = [
     "GetPRInput",
     "CreateTicketDraftInput",
     "SummarizePRInput",
+    "ListTicketsInput",
 ]

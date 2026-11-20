@@ -7,6 +7,7 @@ from app.tools.implementations import (
     get_pr,
     get_service,
     list_open_prs,
+    list_tickets,
     search_docs,
     summarize_pr,
 )
@@ -152,6 +153,31 @@ TOOL_DEFINITIONS = [
                 "required": ["pr_number", "summary", "risk_level", "risk_notes"]
             }
         }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "list_tickets",
+            "description": "List existing operational incidents, historical tickets, and locally created draft tickets.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "service_id": {
+                        "type": "string",
+                        "description": "Optional service ID to filter (e.g. 'svc-checkout-api')"
+                    },
+                    "severity": {
+                        "type": "string",
+                        "enum": ["P0", "P1", "P2", "P3", "P4"],
+                        "description": "Optional severity tier filter"
+                    },
+                    "include_drafts": {
+                        "type": "boolean",
+                        "description": "Whether to include local draft tickets (default: true)"
+                    }
+                }
+            }
+        }
     }
 ]
 
@@ -163,6 +189,7 @@ TOOL_MAPPING: Dict[str, Callable] = {
     "get_pr": get_pr,
     "create_ticket_draft": create_ticket_draft,
     "summarize_pr": summarize_pr,
+    "list_tickets": list_tickets,
 }
 
 
